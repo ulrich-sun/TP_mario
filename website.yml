@@ -1,0 +1,30 @@
+---
+- name: Deploy website"
+  become: yes 
+  hosts: all
+  tags: website
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+  tasks:
+    - name: "clean Folder"
+      file:
+        path: "/home/{{ ansible_user }}/website"
+        state: absent
+    - name: "Install Git"
+      yum:
+        name: git
+        state: present
+        update_cache: yes 
+    - name: "git clone project"
+      git: 
+        repo: https://github.com/diranetafen/static-website-example.git
+        dest: "/home/{{ ansible_user }}/website"
+    - name: "Start container"
+      docker_container:
+        name: website
+        image: nginx
+        state: started
+        ports:
+          - "8000:80"
+        volumes:
+          - /home/{{ ansible_user }}/website:/usr/share/nginx/html/
