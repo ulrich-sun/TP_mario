@@ -2,7 +2,8 @@
 - name: "Install docker on Centos Machine"
   hosts: prod
   become: yes
-
+  vars:
+    ansible_user: centos
   pre_tasks:
     - name: "Remove Old Elements"
       yum:
@@ -17,7 +18,16 @@
         - docker-latest-logrotate 
         - docker-logrotate 
         - docker-engine
-
+    - name: download pip script
+      get_url:
+        url: https://bootstrap.pypa.io/pip/3.6/get-pip.py
+        dest: /tmp/get-pip.py
+    - name: install python-pip
+      command: python3 /tmp/get-pip.py
+    - name: Install docker python
+      pip:
+        name: docker-py
+        executable: /usr/local/bin/pip3
     - name: "Install package"
       yum:
         name: "{{ item }}"
@@ -48,6 +58,6 @@
         enabled: yes 
     - name: "Add user inside docker group"
       user:
-        name: "{{ ansible_user }}"
+        name: "{{ansible_user}}"
         groups: docker
-        append: true
+        append: yes

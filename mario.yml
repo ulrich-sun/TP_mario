@@ -2,6 +2,8 @@
 - name: "Déploiement du conteneur Mario"
   hosts: prod
   become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
      - name: "Téléchargement de l'image Mario"
        docker_image:
