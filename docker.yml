@@ -1,0 +1,56 @@
+docker.yml
+ 
+Text
+---
+- name: "Install docker on Centos Machine"
+  hosts: prod
+  become: yes
+
+  pre_tasks:
+    - name: "Remove Old Elements"
+      yum:
+        name: "{{ item }}"
+        state: removed
+      loop:
+        - docker 
+        - docker-client 
+        - docker-client-latest 
+        - docker-common 
+        - docker-latest 
+        - docker-latest-logrotate 
+        - docker-logrotate 
+        - docker-engine
+
+    - name: "Install package"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - yum-utils
+        - epel-release
+    
+  tasks:
+    - name: "Add repository"
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docker-ce.repo
+    - name: "Install Moteur Docker"
+      yum:
+        name: "{{ item }}"
+        state: latest
+      loop:
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io 
+        - docker-buildx-plugin 
+        - docker-compose-plugin
+    - name: "Start Docker"
+      service:
+        name: docker
+        state: started
+        enabled: yes 
+    - name: "Add user inside docker group"
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: true

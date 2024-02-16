@@ -1,0 +1,12 @@
+---
+- name: Déploiement de l'application Mario
+  hosts: prod
+  become: yes
+  gather_facts: no
+
+  tasks:
+    - name: Exécution du playbook pour installer Docker
+      import_playbook: docker.yml
+
+    - name: Exécution du playbook pour déployer le conteneur Mario
+      import_playbook: mario.yml

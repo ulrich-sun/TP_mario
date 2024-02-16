@@ -1,0 +1,18 @@
+---
+- name: "Déploiement du conteneur Mario"
+  hosts: prod
+  become: yes
+  tasks:
+     - name: "Téléchargement de l'image Mario"
+       docker_image:
+        name: pengbai/docker-supermario
+        source: pull
+
+     - name: "Déploiement du conteneur Mario"
+       docker_container:
+        name: mario_container
+        image: pengbai/docker-supermario
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:8080"
