@@ -1,6 +1,3 @@
-docker.yml
- 
-Text
 ---
 - name: "Install docker on Centos Machine"
   hosts: prod
